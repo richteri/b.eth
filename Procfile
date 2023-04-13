@@ -1,2 +1,1 @@
-web: java $JAVA_OPTS -Dserver.port=$PORT -Dspring.profiles.active=default -jar build/libs/backend-0.0.1-SNAPSHOT.jar
-
+web: java $JAVA_OPTS -Dserver.port=$PORT -Dspring.profiles.active=default -Dspring-boot.run.arguments="--spring.data.mongodb.uri=$MONGODB_URI --spring.data.mongodb.database=$MONGODB_DB" -jar build/libs/backend-0.0.1-SNAPSHOT.jar
