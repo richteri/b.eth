@@ -1,24 +1,34 @@
 package com.beth.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.math.BigDecimal;
+import java.util.Date;
 
 @Document("users")
 @Data
 public class User {
 
-    @Id
-    private String id;
+    @Id private String id;
 
     private String address;
 
+    @JsonIgnore private String nonce;
+
     private String name;
 
-    private int refills;
+    private long wins;
 
-    private BigDecimal balance;
+    private long losses;
 
+    private long verdicts;
+
+    /** wins - losses + verdicts */
+    private long rank;
+
+    private Date registrationDate;
 }
