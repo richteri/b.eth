@@ -45,6 +45,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(apiError);
     }
 
+    @ExceptionHandler(ConflictException.class)
+    protected ResponseEntity<Object> handleConflict(ConflictException ex) {
+        ApiError apiError = new ApiError(HttpStatus.CONFLICT);
+        apiError.setMessage(ex.getMessage());
+        return buildResponseEntity(apiError);
+    }
+
     @ExceptionHandler(Web3AuthenticationException.class)
     protected ResponseEntity<Object> handleWeb3Authentication(Web3AuthenticationException ex) {
         ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED);

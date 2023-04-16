@@ -61,7 +61,10 @@ public class BetService {
                         .setCallDeadline(payload.getCallDeadline())
                         .setDecisionDeadline(payload.getDecisionDeadline())
                         .setBetDate(new Date())
-                        .setBetter(new UserRef().setId(user.getId()).setName(user.getName())));
+                        .setBetter(
+                                new UserRef()
+                                        .setAddress(user.getAddress())
+                                        .setName(user.getName())));
     }
 
     public Bet findById(String id) {

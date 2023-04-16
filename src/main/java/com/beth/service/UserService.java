@@ -2,6 +2,7 @@ package com.beth.service;
 
 import com.beth.domain.User;
 import com.beth.domain.UserPayload;
+import com.beth.exception.ConflictException;
 import com.beth.exception.NotFoundException;
 import com.beth.repository.UserRepository;
 
@@ -29,6 +30,10 @@ public class UserService {
 
     @Transactional
     public User create(UserPayload payload) {
+        if (repository.findByAddress(payload.getAddress()).isPresent() || repository.findByName(payload.getName()).isPresent()) {
+            throw new ConflictException("Address or name already registered");
+        }
+
         return repository.save(
                 new User()
                         .setName(payload.getName())
@@ -37,10 +42,8 @@ public class UserService {
     }
 
     public User findByAddress(String address) {
-        return repository.findAllByAddress(address);
-    }
-
-    public User findById(String id) {
-        return repository.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
+        return repository
+                .findByAddress(address)
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 }

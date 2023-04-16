@@ -14,6 +14,7 @@ public class Web3Authentication extends AbstractAuthenticationToken {
         super(null);
         this.address = address;
         this.signature = signature;
+        setAuthenticated(true);
     }
 
     @Override

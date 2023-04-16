@@ -1,7 +1,5 @@
 package com.beth.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 
 import org.springframework.data.annotation.Id;
@@ -17,7 +15,7 @@ public class User {
 
     private String address;
 
-    @JsonIgnore private String nonce;
+    private String nonce;
 
     private String name;
 

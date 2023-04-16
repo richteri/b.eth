@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class UserRef {
 
-    private String id;
+    private String address;
 
     private String name;
 }
