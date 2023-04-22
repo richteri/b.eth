@@ -1,6 +1,6 @@
 package com.beth.service;
 
-import com.beth.auth.AuthService;
+import com.beth.auth.JwtUserDetailsService;
 import com.beth.domain.Bet;
 import com.beth.domain.BetPayload;
 import com.beth.domain.UserRef;
@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BetService {
 
-    private final AuthService authService;
+    private final JwtUserDetailsService authService;
     private final BetRepository repository;
 
     public List<Bet> findAllByCurrentUser() {

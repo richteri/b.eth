@@ -1,6 +1,7 @@
 package com.beth.rest;
 
-import com.beth.auth.Web3Authentication;
+import com.beth.auth.JwtAuthenticationResponse;
+import com.beth.auth.JwtTokenProvider;
 import com.beth.domain.NoncePayload;
 import com.beth.domain.SignPayload;
 import com.beth.domain.User;
@@ -14,12 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,6 +24,7 @@ public class AuthController {
 
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider tokenProvider;
 
     @GetMapping("challenge/{address}")
     public NoncePayload challenge(@PathVariable("address") String address) {
@@ -40,9 +38,15 @@ public class AuthController {
     }
 
     @PostMapping("auth")
-    public Authentication auth(@RequestBody SignPayload payload) {
-        return authenticationManager.authenticate(
-                new Web3Authentication(payload.getAddress(), payload.getSignature()));
+    public JwtAuthenticationResponse auth(@RequestBody SignPayload payload) {
+        val authentication =
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                payload.getAddress(), payload.getSignature()));
+
+        return new JwtAuthenticationResponse()
+                .setToken(tokenProvider.generateToken(authentication))
+                .setAddress(payload.getAddress());
     }
 
     @PostMapping("register")

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,7 +31,8 @@ public class UserService {
 
     @Transactional
     public User create(UserPayload payload) {
-        if (repository.findByAddress(payload.getAddress()).isPresent() || repository.findByName(payload.getName()).isPresent()) {
+        if (repository.findByAddress(payload.getAddress()).isPresent()
+                || repository.findByName(payload.getName()).isPresent()) {
             throw new ConflictException("Address or name already registered");
         }
 
@@ -38,7 +40,15 @@ public class UserService {
                 new User()
                         .setName(payload.getName())
                         .setAddress(payload.getAddress())
-                        .setNonce(UUID.randomUUID().toString()));
+                        .setNonce(UUID.randomUUID().toString())
+                        .setRegistrationDate(new Date()));
+    }
+
+    @Transactional
+    public void update(User user) {
+        user.setRank(user.getWins() - user.getLosses() + user.getVerdicts());
+
+        repository.save(user);
     }
 
     public User findByAddress(String address) {

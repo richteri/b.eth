@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
@@ -16,10 +17,13 @@ import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 import java.security.SignatureException;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 public class Web3AuthenticationProvider implements AuthenticationProvider {
+
+    private static final String NONCE_PREFIX = "Nonce: ";
 
     private final UserService userService;
 
@@ -27,9 +31,14 @@ public class Web3AuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication)
             throws AuthenticationException {
         val user = userService.findByAddress(authentication.getName());
+        val nonce = NONCE_PREFIX + user.getNonce();
         val signature = authentication.getCredentials().toString();
-        if (verifySignature(user.getAddress(), user.getNonce(), signature)) {
-            return new Web3Authentication(user.getAddress(), signature);
+
+        // generate new nonce
+        userService.update(user.setNonce(UUID.randomUUID().toString()));
+
+        if (verifySignature(user.getAddress(), nonce, signature)) {
+            return new UsernamePasswordAuthenticationToken(user.getAddress(), "");
         } else {
             throw new Web3AuthenticationException("Invalid signature");
         }
@@ -37,7 +46,7 @@ public class Web3AuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return Web3Authentication.class.isAssignableFrom(authentication);
+        return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
     }
 
     private boolean verifySignature(String address, String nonce, String signature) {
