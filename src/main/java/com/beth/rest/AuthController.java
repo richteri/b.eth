@@ -3,9 +3,9 @@ package com.beth.rest;
 import com.beth.auth.JwtAuthenticationResponse;
 import com.beth.auth.JwtTokenProvider;
 import com.beth.domain.NoncePayload;
+import com.beth.domain.RegistrationPayload;
 import com.beth.domain.SignPayload;
 import com.beth.domain.User;
-import com.beth.domain.UserPayload;
 import com.beth.exception.UnknownAddressException;
 import com.beth.service.UserService;
 
@@ -50,7 +50,7 @@ public class AuthController {
     }
 
     @PostMapping("register")
-    public User register(@RequestBody @Valid UserPayload payload) {
-        return userService.create(payload);
+    public User register(@RequestBody @Valid RegistrationPayload payload) {
+        return userService.register(payload);
     }
 }

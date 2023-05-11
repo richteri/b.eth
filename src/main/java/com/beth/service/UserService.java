@@ -1,7 +1,7 @@
 package com.beth.service;
 
+import com.beth.domain.RegistrationPayload;
 import com.beth.domain.User;
-import com.beth.domain.UserPayload;
 import com.beth.exception.ConflictException;
 import com.beth.exception.NotFoundException;
 import com.beth.repository.UserRepository;
@@ -30,7 +30,7 @@ public class UserService {
     }
 
     @Transactional
-    public User create(UserPayload payload) {
+    public User register(RegistrationPayload payload) {
         if (repository.findByAddress(payload.getAddress()).isPresent()
                 || repository.findByName(payload.getName()).isPresent()) {
             throw new ConflictException("Address or name already registered");
